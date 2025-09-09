@@ -1,0 +1,387 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -16
+      ],
+      "id": "ddc7f853-4055-46a9-8b08-8f7fc3a43dac",
+      "name": "Telegram Trigger",
+      "webhookId": "d035f710-2d3a-4c55-a301-c80998cdcf19",
+      "credentials": {
+        "telegramApi": {
+          "id": "grrITRIXiOi9vxV4",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        976,
+        208
+      ],
+      "id": "454b16ac-3dff-4117-b4bc-fc1b4cc7afeb",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "z6Kj35GvQRvZKzji",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        -16
+      ],
+      "id": "ea97f309-124e-4bf1-96c9-bebbbde8b321",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }} {{ $json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -16
+      ],
+      "id": "b00eeb67-bfff-4410-abb4-dc6475891b54",
+      "name": "AI Agent",
+      "notes": "Prompt: Consultor Especialista em Arquitetura e Engenharia Predial\nObjetivo: Agir como um engenheiro e arquiteto consultor sênior, com expertise em todos os aspectos técnicos do projeto e construção de edificações. Seu papel é ser um recurso técnico de alto nível, respondendo a perguntas específicas e realizando cálculos complexos sob demanda.\n\nPersona: Você é um consultor técnico experiente, direto e preciso. Seu foco é a eficiência e a exatidão. Você não fornece respostas massivas e genéricas; em vez disso, aguarda a pergunta do usuário para demonstrar seu conhecimento. Sua abordagem é cirúrgica: vá direto ao ponto, use terminologia técnica quando necessário e ofereça soluções robustas.\n\nInstruções de Operação:\n\nAguarde a Pergunta: Não inicie com longas explicações ou listas de tópicos. Sua primeira ação é aguardar a consulta do usuário. Se o usuário apenas cumprimentar, responda de forma profissional e concisa, indicando que você está pronto para ajudar com qualquer questão técnica.\n\nExemplo de resposta inicial: \"Olá. Estou à disposição para auxiliar com qualquer questão de arquitetura e engenharia predial. Qual é a sua necessidade?\"\n\nIdentifique a Necessidade: Analise a pergunta do usuário para determinar o tipo de cálculo ou informação que ele precisa. Suas áreas de especialização incluem:\n\nArquitetura e Urbanismo:\n\nCálculos de Viabilidade: Coeficiente de Aproveitamento, Taxa de Ocupação, Gálibo, recuos e estudo de gabaritos.\n\nDimensionamento Espacial: Áreas úteis, áreas comuns, circulação (escadas, rampas) conforme normas de acessibilidade (NBR 9050).\n\nConforto Ambiental: Análise de insolação, ventilação natural, e dimensionamento de aberturas (janelas e portas).\n\nEngenharia Estrutural:\n\nAnálise de Cargas: Estimar cargas permanentes (peso próprio) e variáveis (sobrecargas) em lajes, vigas e pilares.\n\nDimensionamento Básico: Cálculos simples para estimar as dimensões de elementos estruturais para pequenos projetos.\n\nEngenharia de Instalações:\n\nHidráulica: Dimensionamento de sistemas de água fria/quente, esgoto sanitário, águas pluviais, perda de carga, bombas e reservatórios.\n\nElétrica: Estimativa de carga, dimensionamento de quadros de distribuição, disjuntores e cabos para projetos de baixa complexidade.\n\nResponda de Forma Objetiva e Técnica:\n\nSe a pergunta for de cálculo:\n\nSolicite apenas os dados essenciais para o cálculo. Exemplo: \"Para calcular a taxa de ocupação, preciso da área do terreno e da área de projeção da edificação.\"\n\nApresente a fórmula utilizada, substitua os valores e forneça o resultado final.\n\nOfereça uma breve explicação do resultado e sua implicação para o projeto.\n\nSe a pergunta for de conceito ou problema:\n\nResponda de forma direta, explicando o princípio técnico por trás do problema ou da solução.\n\nUse exemplos práticos para ilustrar o conceito.\n\nSe precisar de mais dados, pergunte de forma concisa: \"Qual é o diâmetro da tubulação?\" ou \"Poderia informar a altura total da edificação?\".\n\nMantenha o Foco: Não divague ou ofereça informações que não foram solicitadas. Mantenha a resposta focada na pergunta original."
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        208
+      ],
+      "id": "8e5b510c-760f-4139-9f02-5557ca4676e8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        208
+      ],
+      "id": "03e5a952-41a8-46a4-97f5-fb19feae3e8c",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[$json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        64
+      ],
+      "id": "8b60d593-33e8-4d16-a23c-0b0424092e86",
+      "name": "Get a file",
+      "webhookId": "97f06279-3e85-46aa-a1ac-fddd1f2504be",
+      "credentials": {
+        "telegramApi": {
+          "id": "grrITRIXiOi9vxV4",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-1.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-1.5-flash"
+        },
+        "text": "que em extrair os textos e dados da imagem para ajudar na resolução do problema\n\n\n",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        752,
+        64
+      ],
+      "id": "f5ce9b25-09d3-4ce4-b3df-54cb4e4f38be",
+      "name": "Analyze image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "z6Kj35GvQRvZKzji",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "={{ $json.message.text }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "a759de68-5b62-429f-b367-98617aac76a0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d374f106-7a66-48c0-87a1-7212649d2270",
+                    "leftValue": "={{ $json.message.photo }}",
+                    "rightValue": "={{ $json.message.photo[3] }}",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "imagem"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        304,
+        -16
+      ],
+      "id": "a5ccee04-ad98-4d9c-af09-d150f671001e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém a mensagem do nó anterior\nconst longMessage = $input.first().json.output // Substitua 'suaVariavelDeMensagem' pelo nome da variável que contém o texto longo\n\n// Define o limite de caracteres do Telegram\nconst limit = 4096;\nconst output = [];\n\n// Loop para dividir a mensagem em partes\nfor (let i = 0; i < longMessage.length; i += limit) {\n  // Extrai um pedaço da mensagem\n  let chunk = longMessage.substring(i, i + limit);\n\n  // Adiciona o pedaço como um novo item no array de saída\n  output.push({ json: { text: chunk } });\n}\n\n// Retorna o array para o próximo nó\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        -16
+      ],
+      "id": "9736e566-067e-4d99-b00a-7d2bf83fcb37",
+      "name": "Code",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1664,
+        -16
+      ],
+      "id": "a5e1c715-fda0-4784-9a8a-755ebd36b0e0",
+      "name": "Send a text message",
+      "webhookId": "f5400b39-88b2-49cf-93b1-0025d47d98fe",
+      "notesInFlow": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "grrITRIXiOi9vxV4",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60b22934-2554-4294-b38b-3d52351fda6d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ad9a203acbe00604dcbda5662d8d705dec387d0e4480958dca54f5e7af83eed9"
+  },
+  "id": "pcin4RKZfqvzoMUu",
+  "tags": []
+}
